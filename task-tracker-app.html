@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Tracker - Gradient Edition</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            text-align: center;
+            color: #764ba2;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+        }
+
+        #taskForm {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            flex: 1;
+        }
+
+        label {
+            display: block;
+            color: #555;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            font-size: 1em;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="date"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+            font-family: inherit;
+        }
+
+        button[type="submit"] {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px 40px;
+            font-size: 1.1em;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 20px auto 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        button[type="submit"]:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        button[type="submit"]:active {
+            transform: translateY(-1px);
+        }
+
+        .tasks-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            color: #764ba2;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .task-count {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7em;
+            font-weight: normal;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+        }
+
+        thead th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85em;
+            letter-spacing: 0.5px;
+            first-child { border-radius: 10px 0 0 10px; }
+            last-child { border-radius: 0 10px 10px 0; }
+        }
+
+        thead th:first-child {
+            border-radius: 10px 0 0 10px;
+        }
+
+        thead th:last-child {
+            border-radius: 0 10px 10px 0;
+        }
+
+        tbody tr {
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        tbody tr:hover {
+            background: #e9ecef;
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        tbody td {
+            padding: 15px;
+            color: #555;
+        }
+
+        tbody td:first-child {
+            border-radius: 10px 0 0 10px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        tbody td:last-child {
+            border-radius: 0 10px 10px 0;
+        }
+
+        .priority-high {
+            border-left: 4px solid #ff6b6b;
+        }
+
+        .priority-medium {
+            border-left: 4px solid #ffd93d;
+        }
+
+        .priority-low {
+            border-left: 4px solid #6bcf7f;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 0 5px;
+        }
+
+        .complete-btn {
+            background: #6bcf7f;
+            color: white;
+        }
+
+        .complete-btn:hover {
+            background: #5ab86d;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(107, 207, 127, 0.3);
+        }
+
+        .remove-btn {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .remove-btn:hover {
+            background: #ff5252;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(255, 107, 107, 0.3);
+        }
+
+        .completed-task {
+            opacity: 0.6;
+            text-decoration: line-through;
+        }
+
+        .completed-task td {
+            color: #999 !important;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .empty-state-text {
+            font-size: 1.2em;
+            color: #999;
+        }
+
+        .deadline-soon {
+            color: #ff6b6b;
+            font-weight: 600;
+        }
+
+        .deadline-passed {
+            color: #ff3838;
+            font-weight: 600;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✨ Task Tracker</h1>
+        <p class="subtitle">Stay organized, stay productive!</p>
+        
+        <form id="taskForm">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="taskName">Task Name</label>
+                    <input type="text" id="taskName" name="taskName" placeholder="Enter task name...">
+                </div>
+                <div class="form-group">
+                    <label for="taskPriority">Priority</label>
+                    <select id="taskPriority" name="taskPriority">
+                        <option value="low">Low Priority</option>
+                        <option value="medium" selected>Medium Priority</option>
+                        <option value="high">High Priority</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="taskDescription">Description</label>
+                <textarea id="taskDescription" name="taskDescription" placeholder="Add task details..."></textarea>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="taskDeadline">Deadline</label>
+                    <input type="date" id="taskDeadline" name="taskDeadline">
+                </div>
+            </div>
+            
+            <button type="submit">+ Add Task</button>
+        </form>
+        
+        <div class="tasks-section">
+            <h2 class="section-title">
+                Your Tasks
+                <span class="task-count" id="taskCount">0</span>
+            </h2>
+            <table id="taskTable">
+                <thead style="display: none;">
+                    <tr>
+                        <th>Task</th>
+                        <th>Description</th>
+                        <th>Priority</th>
+                        <th>Deadline</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="taskTableBody">
+                    <!-- Tasks will be added here -->
+                </tbody>
+            </table>
+            <div id="emptyState" class="empty-state">
+                <div class="empty-state-icon">📝</div>
+                <div class="empty-state-text">No tasks yet. Add your first task above!</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Section 1: TODOs
+        // TODO: Register submissions from the user on the form.
+        // TODO: Determine the value of the data submitted and add it to a JavaScript array called tasks
+        // TODO: Call the render function to update the table with the new tasks.
+
+        // Section 2: App State Variables
+        let tasks = [];
+
+        // Section 3: Cached Element References
+        const taskForm = document.getElementById("taskForm");
+        const taskTable = document.getElementById("taskTable");
+        const taskTableBody = document.getElementById("taskTableBody");
+        const emptyState = document.getElementById("emptyState");
+        const taskCount = document.getElementById("taskCount");
+
+        // Section 4: Functions and Event Listeners
+
+        // Function to handle form submissions
+        function handleSubmission(event) {
+            event.preventDefault();
+            
+            // Get form input values
+            const taskName = document.getElementById('taskName').value.trim();
+            const taskDescription = document.getElementById('taskDescription').value.trim();
+            const taskDeadline = document.getElementById('taskDeadline').value;
+            const taskPriority = document.getElementById('taskPriority').value;
+            
+            // Validate input fields
+            if (!taskName || !taskDeadline) {
+                alert('✋ Task name and deadline are required!');
+                return;
+            }
+            
+            // Check if deadline is in the past
+            const today = new Date().toISOString().split('T')[0];
+            if (taskDeadline < today) {
+                if (!confirm('⚠️ This deadline is in the past. Add anyway?')) {
+                    return;
+                }
+            }
+            
+            // Update the tasks array
+            tasks.push({ 
+                id: Date.now(),
+                name: taskName, 
+                description: taskDescription || 'No description', 
+                deadline: taskDeadline,
+                priority: taskPriority,
+                completed: false
+            });
+            
+            // Reset form
+            taskForm.reset();
+            document.getElementById('taskPriority').value = 'medium';
+            
+            // Call the render function
+            render();
+        }
+
+        // Function to render tasks in the table
+        function render() {
+            if (tasks.length === 0) {
+                emptyState.style.display = 'block';
+                taskTable.querySelector('thead').style.display = 'none';
+                taskTableBody.innerHTML = '';
+                taskCount.textContent = '0';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            taskTable.querySelector('thead').style.display = '';
+            taskCount.textContent = tasks.length;
+            
+            // Sort tasks by deadline and priority
+            const sortedTasks = [...tasks].sort((a, b) => {
+                if (a.completed !== b.completed) return a.completed ? 1 : -1;
+                if (a.deadline !== b.deadline) return new Date(a.deadline) - new Date(b.deadline);
+                const priorityOrder = { high: 0, medium: 1, low: 2 };
+                return priorityOrder[a.priority] - priorityOrder[b.priority];
+            });
+            
+            taskTableBody.innerHTML = sortedTasks.map(task => {
+                const deadlineDate = new Date(task.deadline);
+                const today = new Date();
+                const daysUntil = Math.ceil((deadlineDate - today) / (1000 * 60 * 60 * 24));
+                
+                let deadlineClass = '';
+                let deadlineText = task.deadline;
+                
+                if (daysUntil < 0) {
+                    deadlineClass = 'deadline-passed';
+                    deadlineText += ' (Overdue!)';
+                } else if (daysUntil <= 3) {
+                    deadlineClass = 'deadline-soon';
+                    deadlineText += ` (${daysUntil} days)`;
+                }
+                
+                return `
+                    <tr class="priority-${task.priority} ${task.completed ? 'completed-task' : ''}" data-id="${task.id}">
+                        <td>${task.name}</td>
+                        <td>${task.description}</td>
+                        <td>
+                            <span style="
+                                background: ${task.priority === 'high' ? '#ff6b6b' : task.priority === 'medium' ? '#ffd93d' : '#6bcf7f'};
+                                color: white;
+                                padding: 4px 10px;
+                                border-radius: 5px;
+                                font-size: 0.85em;
+                                font-weight: 600;
+                            ">${task.priority.toUpperCase()}</span>
+                        </td>
+                        <td class="${deadlineClass}">${deadlineText}</td>
+                        <td>
+                            <button class="action-btn complete-btn" onclick="toggleComplete(${task.id})">
+                                ${task.completed ? 'Undo' : 'Complete'}
+                            </button>
+                            <button class="action-btn remove-btn" onclick="removeTask(${task.id})">Remove</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Function to toggle task completion
+        function toggleComplete(taskId) {
+            const task = tasks.find(t => t.id === taskId);
+            if (task) {
+                task.completed = !task.completed;
+                render();
+            }
+        }
+
+        // Function to remove a task
+        function removeTask(taskId) {
+            if (confirm('Are you sure you want to remove this task?')) {
+                tasks = tasks.filter(t => t.id !== taskId);
+                render();
+            }
+        }
+
+        // Function to initialize the table
+        function init() {
+            taskTableBody.innerHTML = '';
+            tasks = [];
+            render();
+            
+            // Set minimum date to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('taskDeadline').setAttribute('min', today);
+        }
+
+        // Event listener for form submission
+        taskForm.addEventListener('submit', handleSubmission);
+
+        // Call the init function to set up the initial state of the app
+        init();
+    </script>
+</body>
+</html>
